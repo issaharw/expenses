@@ -1,0 +1,2 @@
+mkdir $ULTRACLOUD_ROOT_FOLDER/ultracloud-db
+docker run --name ultracloud-db -p 3306:3306 -v $ULTRACLOUD_ROOT_FOLDER/ultracloud-db:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=Ultrasight1! -e MYSQL_DATABASE=cloud -d mysql:8.0.31

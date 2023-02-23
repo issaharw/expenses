@@ -1,0 +1,45 @@
+version: "3"
+services:
+  expances-db:
+    image: mysql:8.0.31
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "3306:3306"
+    env_file: docker-compose.env
+    volumes:
+      - ./localtime:/etc/localtime:ro
+      - ./timezone:/etc/timezone:ro
+      - ./expances/expances-db:/var/lib/mysql
+  expances-be:
+    image: expances-be
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "8080:8080"
+    env_file: docker-compose.env
+    depends_on:
+      - expances-db
+    volumes:
+      - ./localtime:/etc/localtime:ro
+      - ./timezone:/etc/timezone:ro
+      - ./expances/:/expances
+      - ./expances/log:/log
+  expances-ui:
+    image: expances-ui
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "80:80"
+    env_file: docker-compose.env
+    depends_on:
+      - expances-be
+    volumes:
+      - ./localtime:/etc/localtime:ro
+      - ./timezone:/etc/timezone:ro
