@@ -1,6 +1,6 @@
 package com.issahar.expenses.storage
 
-import com.ultrasight.cloud.di.Config
+import com.issahar.expenses.di.Config
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component

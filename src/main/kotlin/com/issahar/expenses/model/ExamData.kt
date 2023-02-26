@@ -1,9 +1,9 @@
 package com.issahar.expenses.model
 
-import com.ultrasight.cloud.util.UI_BIRTHDATE_FORMAT
-import com.ultrasight.cloud.util.formatDate
-import com.ultrasight.cloud.util.getYearsBetween
-import com.ultrasight.cloud.util.now
+import com.issahar.expenses.util.UI_BIRTHDATE_FORMAT
+import com.issahar.expenses.util.formatDate
+import com.issahar.expenses.util.getYearsBetween
+import com.issahar.expenses.util.now
 
 data class ExamData(
     val patientId: Int,

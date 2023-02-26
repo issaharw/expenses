@@ -1,8 +1,8 @@
 package com.issahar.expenses.model
 
-import com.ultrasight.cloud.util.EXPORT_DICOM_DATE_FORMAT
-import com.ultrasight.cloud.util.EXPORT_DICOM_DATE_TIME_FORMAT
-import com.ultrasight.cloud.util.parseDate
+import com.issahar.expenses.util.EXPORT_DICOM_DATE_FORMAT
+import com.issahar.expenses.util.EXPORT_DICOM_DATE_TIME_FORMAT
+import com.issahar.expenses.util.parseDate
 import org.slf4j.LoggerFactory
 
 private const val IMAGES_FOLDER_NAME = "images"

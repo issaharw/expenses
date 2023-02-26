@@ -1,12 +1,12 @@
 package com.issahar.expenses.resource
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.ultrasight.cloud.handler.ClipHandler
-import com.ultrasight.cloud.model.NetworkResults
-import com.ultrasight.cloud.model.UploadFileDetails
-import com.ultrasight.cloud.storage.Storage
-import com.ultrasight.cloud.util.mapper
-import com.ultrasight.cloud.util.now
+import com.issahar.expenses.handler.ClipHandler
+import com.issahar.expenses.model.NetworkResults
+import com.issahar.expenses.model.UploadFileDetails
+import com.issahar.expenses.storage.Storage
+import com.issahar.expenses.util.mapper
+import com.issahar.expenses.util.now
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.FormDataParam
 import org.slf4j.LoggerFactory

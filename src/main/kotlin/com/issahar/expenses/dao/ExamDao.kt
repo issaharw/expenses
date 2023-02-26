@@ -1,8 +1,8 @@
 package com.issahar.expenses.dao
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.ultrasight.cloud.model.*
-import com.ultrasight.cloud.util.*
+import com.issahar.expenses.model.*
+import com.issahar.expenses.util.*
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.jdbi.v3.sqlobject.SqlObject

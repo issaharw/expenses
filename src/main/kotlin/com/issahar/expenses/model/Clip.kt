@@ -1,6 +1,6 @@
 package com.issahar.expenses.model
 
-import com.ultrasight.cloud.util.mapper
+import com.issahar.expenses.util.mapper
 
 data class Clip(val id: Int,
                 val instanceUid: String,

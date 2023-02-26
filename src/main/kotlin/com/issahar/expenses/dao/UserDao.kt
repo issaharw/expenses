@@ -1,6 +1,6 @@
 package com.issahar.expenses.dao
 
-import com.ultrasight.cloud.model.User
+import com.issahar.expenses.model.User
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.jdbi.v3.sqlobject.SqlObject

@@ -1,6 +1,6 @@
 package com.issahar.expenses.model
 
-import com.ultrasight.cloud.util.mapper
+import com.issahar.expenses.util.mapper
 
 data class Exam(val id: Int,
                 val studyUid: String,

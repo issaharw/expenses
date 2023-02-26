@@ -1,6 +1,6 @@
 package com.issahar.expenses.filter
 
-import com.ultrasight.cloud.dao.UserDao
+import com.issahar.expenses.dao.UserDao
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import jakarta.inject.Inject

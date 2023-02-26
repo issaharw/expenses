@@ -1,6 +1,6 @@
 package com.issahar.expenses.model
 
-import com.ultrasight.cloud.util.getFullName
+import com.issahar.expenses.util.getFullName
 
 data class Patient(val id: Int,
                    val mrn: String,

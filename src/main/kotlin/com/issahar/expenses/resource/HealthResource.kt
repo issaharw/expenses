@@ -1,7 +1,7 @@
 package com.issahar.expenses.resource
 
-import com.ultrasight.cloud.di.Config
-import com.ultrasight.cloud.util.httpGet
+import com.issahar.expenses.di.Config
+import com.issahar.expenses.util.httpGet
 import org.slf4j.LoggerFactory
 import java.io.*
 import jakarta.inject.Inject

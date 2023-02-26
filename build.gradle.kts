@@ -26,6 +26,9 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 	implementation("javax.annotation:javax.annotation-api:1.3.2")
 
+	// Apache POI for excel
+	implementation("org.apache.poi:poi:5.2.3")
+	implementation("org.apache.poi:poi-ooxml:5.2.3")
 
 	// DB, JDBI and connection pooling
 	implementation("com.zaxxer:HikariCP:5.0.1")

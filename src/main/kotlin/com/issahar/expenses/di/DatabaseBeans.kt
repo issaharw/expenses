@@ -1,9 +1,9 @@
 package com.issahar.expenses.di
 
-import com.ultrasight.cloud.dao.ClipDao
-import com.ultrasight.cloud.dao.ExamDao
-import com.ultrasight.cloud.dao.PatientDao
-import com.ultrasight.cloud.util.mapper
+import com.issahar.expenses.dao.ClipDao
+import com.issahar.expenses.dao.ExamDao
+import com.issahar.expenses.dao.PatientDao
+import com.issahar.expenses.util.mapper
 import org.jdbi.v3.core.Jdbi
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
@@ -15,7 +15,7 @@ import jakarta.inject.Singleton
 import jakarta.inject.Inject
 import javax.sql.DataSource
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.ultrasight.cloud.dao.UserDao
+import com.issahar.expenses.dao.UserDao
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 

@@ -1,17 +1,15 @@
 package com.issahar.expenses.handler
 
-import com.ultrasight.cloud.dao.ClipDao
-import com.ultrasight.cloud.dao.ExamDao
-import com.ultrasight.cloud.dao.PatientDao
-import com.ultrasight.cloud.di.Async
-import com.ultrasight.cloud.di.Config
-import com.ultrasight.cloud.dicom.getDicomData
-import com.ultrasight.cloud.dicom.getDicomSingleImage
-import com.ultrasight.cloud.model.*
-import com.ultrasight.cloud.storage.Storage
-import com.ultrasight.cloud.util.parsePatientName
-import com.ultrasight.cloud.util.httpPost
-import com.ultrasight.cloud.util.now
+import com.issahar.expenses.dao.ClipDao
+import com.issahar.expenses.dao.ExamDao
+import com.issahar.expenses.dao.PatientDao
+import com.issahar.expenses.di.Async
+import com.issahar.expenses.di.Config
+import com.issahar.expenses.model.*
+import com.issahar.expenses.storage.Storage
+import com.issahar.expenses.util.parsePatientName
+import com.issahar.expenses.util.httpPost
+import com.issahar.expenses.util.now
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.File
@@ -20,6 +18,7 @@ import java.io.IOException
 import java.io.InputStream
 import javax.imageio.ImageIO
 import jakarta.inject.Inject
+import java.awt.image.BufferedImage
 
 private const val IMAGE_FILE_SUFFIX = "jpg"
 private const val QUALITY_PROCESSING_PATH = "/api/calculate-clip-quality"
@@ -37,20 +36,20 @@ class ClipHandler @Inject constructor(private val config: Config,
 
 
     fun handleClip(filePath: String): Clip? {
-        val dcmTempFile = storage.getFileFromTemp(filePath) ?: return null
-        val dicomData = getDicomData(dcmTempFile) ?: return null
-        val clipFromDB = clipDao.getClip(dicomData.instanceId)
-        val clip = if (clipFromDB == null) {
-            createClip(dicomData)
-                .also { logger.info("clip ${dicomData.instanceId} was created in the db") }
-        }
-        else {
-            // re-running clip even if it exists
-            updateClipStatusToCreated(clipFromDB)
-                .also { logger.info("clip ${dicomData.instanceId} was saved in db with status 'created' again.") }
-        }
-        Async.pool.execute(ClipProcessor(dicomData, dcmTempFile, clip))
-        return clip
+//        val dcmTempFile = storage.getFileFromTemp(filePath) ?: return null
+//        val clipFromDB = clipDao.getClip("")
+//        val clip = if (clipFromDB == null) {
+//            createClip(dicomData)
+//                .also { logger.info("clip ${dicomData.instanceId} was created in the db") }
+//        }
+//        else {
+//            // re-running clip even if it exists
+//            updateClipStatusToCreated(clipFromDB)
+//                .also { logger.info("clip ${dicomData.instanceId} was saved in db with status 'created' again.") }
+//        }
+//        Async.pool.execute(ClipProcessor(dicomData, dcmTempFile, clip))
+//        return clip
+        return null
     }
 
     fun createClip(dicomData: DicomData): Clip {
@@ -192,8 +191,6 @@ class ClipHandler @Inject constructor(private val config: Config,
             for (index in 0 until dicomData.numberOfFrames) {
                 val imageTempFile = File(config.tempFolder, "${dicomData.instanceId}/$index.$IMAGE_FILE_SUFFIX")
                 imageTempFile.parentFile.mkdirs()
-                val image = getDicomSingleImage(dicomFile, index)
-                ImageIO.write(image, IMAGE_FILE_SUFFIX, imageTempFile)
                 val imageUploadSuccess = storage.saveFile("${dicomData.clipImagesFolder}/${imageTempFile.name}", imageTempFile)
                 imageTempFile.delete()
                 if (!imageUploadSuccess) return false

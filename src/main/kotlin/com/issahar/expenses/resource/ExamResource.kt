@@ -1,14 +1,14 @@
 package com.issahar.expenses.resource
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.ultrasight.cloud.dao.ClipDao
-import com.ultrasight.cloud.dao.ExamDao
-import com.ultrasight.cloud.dao.PatientDao
-import com.ultrasight.cloud.handler.ClipHandler
-import com.ultrasight.cloud.model.*
-import com.ultrasight.cloud.storage.Storage
+import com.issahar.expenses.dao.ClipDao
+import com.issahar.expenses.dao.ExamDao
+import com.issahar.expenses.dao.PatientDao
+import com.issahar.expenses.handler.ClipHandler
+import com.issahar.expenses.model.*
+import com.issahar.expenses.storage.Storage
 import org.slf4j.LoggerFactory
-import com.ultrasight.cloud.util.*
+import com.issahar.expenses.util.*
 import java.io.*
 import jakarta.inject.Inject
 import jakarta.ws.rs.*

@@ -1,7 +1,7 @@
 package com.issahar.expenses.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.ultrasight.cloud.util.mapper
+import com.issahar.expenses.util.mapper
 
 class NetworkResults (val qualities: Map<String,Double>?,
                       @JsonProperty("clip_quality") val clipQuality: Double?,
