@@ -1,6 +1,6 @@
 version: "3"
 services:
-  expances-db:
+  expenses-db:
     image: mysql:8.0.31
     logging:
       driver: json-file
@@ -12,9 +12,9 @@ services:
     volumes:
       - ./localtime:/etc/localtime:ro
       - ./timezone:/etc/timezone:ro
-      - ./expances/expances-db:/var/lib/mysql
-  expances-be:
-    image: expances-be
+      - ./expenses/expenses-db:/var/lib/mysql
+  expenses-be:
+    image: expenses-be
     logging:
       driver: json-file
       options:
@@ -23,14 +23,14 @@ services:
       - "8080:8080"
     env_file: docker-compose.env
     depends_on:
-      - expances-db
+      - expenses-db
     volumes:
       - ./localtime:/etc/localtime:ro
       - ./timezone:/etc/timezone:ro
-      - ./expances/:/expances
-      - ./expances/log:/log
-  expances-ui:
-    image: expances-ui
+      - ./expenses/:/expenses
+      - ./expenses/log:/log
+  expenses-ui:
+    image: expenses-ui
     logging:
       driver: json-file
       options:
@@ -39,7 +39,7 @@ services:
       - "80:80"
     env_file: docker-compose.env
     depends_on:
-      - expances-be
+      - expenses-be
     volumes:
       - ./localtime:/etc/localtime:ro
       - ./timezone:/etc/timezone:ro
