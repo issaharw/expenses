@@ -1,8 +1,5 @@
 package com.issahar.expenses.di
 
-import com.issahar.expenses.dao.ClipDao
-import com.issahar.expenses.dao.ExamDao
-import com.issahar.expenses.dao.PatientDao
 import com.issahar.expenses.util.mapper
 import org.jdbi.v3.core.Jdbi
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -15,7 +12,7 @@ import jakarta.inject.Singleton
 import jakarta.inject.Inject
 import javax.sql.DataSource
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.issahar.expenses.dao.UserDao
+import com.issahar.expenses.dao.*
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 
@@ -60,18 +57,8 @@ class DatabaseBeans @Inject constructor(private val config: Config) {
     }
 
     @Bean
-    fun patientDao(dbi: Jdbi): PatientDao {
-        return dbi.onDemand(PatientDao::class.java)
-    }
-
-    @Bean
-    fun examDao(dbi: Jdbi): ExamDao {
-        return dbi.onDemand(ExamDao::class.java)
-    }
-
-    @Bean
-    fun clipDao(dbi: Jdbi): ClipDao {
-        return dbi.onDemand(ClipDao::class.java)
+    fun expenseDao(dbi: Jdbi): ExpenseDao {
+        return dbi.onDemand(ExpenseDao::class.java)
     }
 
     @Bean

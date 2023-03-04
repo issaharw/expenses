@@ -1,41 +1,29 @@
 package com.issahar.expenses.handler
 
-import com.issahar.expenses.dao.ClipDao
-import com.issahar.expenses.dao.ExamDao
-import com.issahar.expenses.dao.PatientDao
-import com.issahar.expenses.di.Async
+import com.issahar.expenses.dao.ExpenseDao
 import com.issahar.expenses.di.Config
 import com.issahar.expenses.model.*
 import com.issahar.expenses.storage.Storage
-import com.issahar.expenses.util.parsePatientName
 import com.issahar.expenses.util.httpPost
 import com.issahar.expenses.util.now
+import com.issahar.expenses.util.parsePatientName
+import jakarta.inject.Inject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import javax.imageio.ImageIO
-import jakarta.inject.Inject
-import java.awt.image.BufferedImage
-
-private const val IMAGE_FILE_SUFFIX = "jpg"
-private const val QUALITY_PROCESSING_PATH = "/api/calculate-clip-quality"
-private val viewsForCombinedQS = listOf("PLAX","SAX MV", "2C", "4C", "SC 4C HOLD AIR", "SC IVC")
-private val allViews = listOf("2C", "3C", "4C", "5C", "PLAX", "SAX AV", "SAX MV", "SAX PAP", "SC IVC", "SC 4C HOLD AIR")
 
 @Component
-class ClipHandler @Inject constructor(private val config: Config,
-                                      private val patientDao: PatientDao,
-                                      private val examDao: ExamDao,
-                                      private val clipDao: ClipDao,
-                                      private val storage: Storage) {
+class ExpenseHandler @Inject constructor(private val config: Config,
+                                         private val expenseDao: ExpenseDao,
+                                         private val storage: Storage)
+{
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-
-    fun handleClip(filePath: String): Clip? {
+    fun handleExpensesFile(inputStream: InputStream, expensesFileType: ExpensesFileType) {
 //        val dcmTempFile = storage.getFileFromTemp(filePath) ?: return null
 //        val clipFromDB = clipDao.getClip("")
 //        val clip = if (clipFromDB == null) {
@@ -48,15 +36,26 @@ class ClipHandler @Inject constructor(private val config: Config,
 //                .also { logger.info("clip ${dicomData.instanceId} was saved in db with status 'created' again.") }
 //        }
 //        Async.pool.execute(ClipProcessor(dicomData, dcmTempFile, clip))
-//        return clip
-        return null
+//        return cli
     }
+/*
 
     fun createClip(dicomData: DicomData): Clip {
         val exam = getOrCreateExam(dicomData)
         val clipType = if (dicomData.numberOfFrames > 1) ClipType.CLIP else ClipType.IMAGE
         val imagesJson = createImagesJson(dicomData.numberOfFrames, dicomData.clipImagesFolder)
-        val clip = Clip(0, dicomData.instanceId, exam.id, dicomData.clipTime, clipType, ClipStatus.CREATED, imagesJson, null, dicomData.cineRate, now())
+        val clip = Clip(
+            0,
+            dicomData.instanceId,
+            exam.id,
+            dicomData.clipTime,
+            clipType,
+            ClipStatus.CREATED,
+            imagesJson,
+            null,
+            dicomData.cineRate,
+            now()
+        )
         val clipId = clipDao.addClip(clip)
         return clip.copy(id=clipId)
     }
@@ -66,8 +65,21 @@ class ClipHandler @Inject constructor(private val config: Config,
         if (exam == null) {
             val patient = getOrCreatePatient(dicomData)
             val userData = ExamUserData(listOf(), IndicationsData(listOf(), listOf()), UserAddedExamData())
-            exam = Exam(0, dicomData.studyId, patient.id, Status.CREATED, dicomData.examTime, userData, dicomData.performing,
-                dicomData.attending, dicomData.accessionNumber, dicomData.manufacturerModel, dicomData.transducerData, dicomData.processingFunction, now())
+            exam = Exam(
+                0,
+                dicomData.studyId,
+                patient.id,
+                Status.CREATED,
+                dicomData.examTime,
+                userData,
+                dicomData.performing,
+                dicomData.attending,
+                dicomData.accessionNumber,
+                dicomData.manufacturerModel,
+                dicomData.transducerData,
+                dicomData.processingFunction,
+                now()
+            )
             val examId = examDao.addExam(exam) // error handling
             exam = exam.copy(id=examId)
         }
@@ -78,7 +90,16 @@ class ClipHandler @Inject constructor(private val config: Config,
         var patient = patientDao.getPatientByMrn(dicomData.patientId)
         if (patient == null) {
             val (firstName, middleName, lastName) = parsePatientName(dicomData.patientName)
-            patient = Patient(0, dicomData.patientId, firstName, middleName, lastName, dicomData.patientSex, dicomData.birthDate, now())
+            patient = Patient(
+                0,
+                dicomData.patientId,
+                firstName,
+                middleName,
+                lastName,
+                dicomData.patientSex,
+                dicomData.birthDate,
+                now()
+            )
             // add patient to db
             val patientId = patientDao.addPatient(patient) // error handling?
             patient = patient.copy(id=patientId)
@@ -138,7 +159,7 @@ class ClipHandler @Inject constructor(private val config: Config,
             examWithResults.maxOf { it.getViewQuality(view) }.toInt()
         }
         val combinedQS = (joinedResults.filter { it.key in viewsForCombinedQS }.values).average().toInt()
-        val doneCalculating = examClips.filter { it.clipType == ClipType.CLIP  }.all { it.clipStatus == ClipStatus.DONE }
+        val doneCalculating = examClips.filter { it.clipType == ClipType.CLIP }.all { it.clipStatus == ClipStatus.DONE }
         return Triple(joinedResults, combinedQS, doneCalculating)
     }
 
@@ -183,7 +204,7 @@ class ClipHandler @Inject constructor(private val config: Config,
             dcmTempFile.delete()
         }
 
-        private fun saveDicomImagesToStorage(dicomData: DicomData, dicomFile:File): Boolean {
+        private fun saveDicomImagesToStorage(dicomData: DicomData, dicomFile: File): Boolean {
             logger.info("Saving file to storage. Clip: ${dicomData.instanceId}")
             val dicomUploadSuccess =  storage.saveFile(dicomData.clipFile, dicomFile)
             logger.info("File saved to storage. Clip: ${dicomData.instanceId}. Successful: $dicomUploadSuccess")
@@ -198,4 +219,5 @@ class ClipHandler @Inject constructor(private val config: Config,
             return true
         }
     }
+*/
 }

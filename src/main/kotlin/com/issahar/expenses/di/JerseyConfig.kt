@@ -10,7 +10,6 @@ class JerseyConfig : ResourceConfig() {
     init {
         register(MultiPartFeature::class.java)
         register(HealthResource::class.java)
-        register(ExamResource::class.java)
-        register(ClipResource::class.java)
+        register(ExpenseResource::class.java)
     }
 }
