@@ -12,10 +12,8 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transactional
 import java.sql.ResultSet
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.issahar.expenses.model.*
 import com.issahar.expenses.util.*
-import org.jdbi.v3.sqlobject.customizer.BindList
 
 
 @RegisterRowMappers(RegisterRowMapper(ExpenseMapper::class))
@@ -25,6 +23,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
         """select
             id,
             expense_date,
+            charge_date,
             amount,
             name,
             asmacta,
@@ -39,6 +38,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
     @SqlUpdate("""INSERT INTO Expenses
           (
             expense_date,
+            charge_date,
             amount,
             name,
             asmacta,
@@ -49,6 +49,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
           )
           VALUES (
             :date,
+            :chargeDate,
             :amount,
             :name,
             :asmachta,
@@ -67,6 +68,7 @@ class ExpenseMapper : RowMapper<Expense> {
         return Expense(
             resultSet.getInt("id"),
             resultSet.getDate("expense_date"),
+            resultSet.getDate("charge_date"),
             resultSet.getFloat("amount").toDouble(),
             resultSet.getString("name"),
             resultSet.getInt("asmachta"),

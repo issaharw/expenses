@@ -1,5 +1,7 @@
 package com.issahar.expenses
 
+import com.issahar.expenses.excel.PoalimCreditCardFileParser
+import com.issahar.expenses.excel.PoalimTransactionsFileParser
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DateUtil
@@ -20,8 +22,21 @@ fun main(args: Array<String>) {
 
 
 fun testing() {
+	val fis = FileInputStream("/Users/issahar/Downloads/excelNewBank-February.xlsx")
+
+	val parser = PoalimCreditCardFileParser()
+	val expenses = parser.parseFile(fis)
+	println(expenses.size)
+}
+
+
+
+/*
+fun testing() {
 	val fis = FileInputStream("/Users/issahar/Downloads/excelNewTransactions.xlsx")
 
+	val parser = PoalimTransactionsFileParser()
+	val expenses = parser.parseFile(fis)
 	val myWorkBook = XSSFWorkbook(fis)
 	val mySheet: XSSFSheet = myWorkBook.getSheetAt(0)
 	val rowIterator = mySheet.iterator()
@@ -39,4 +54,6 @@ fun testing() {
 			}
 		}
 		println("")
-	}}
+	}
+}
+*/

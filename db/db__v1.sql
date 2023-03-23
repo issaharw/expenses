@@ -1,6 +1,7 @@
 CREATE TABLE `Expenses` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `expense_date` date NOT NULL,
+  `charge_date` date NOT NULL,
   `amount` float(2) NOT NULL,
   `name` varchar(300) NOT NULL,
   `asmachta` bigint DEFAULT NULL,

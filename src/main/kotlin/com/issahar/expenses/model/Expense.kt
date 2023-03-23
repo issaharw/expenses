@@ -5,6 +5,7 @@ import java.util.Date
 
 data class Expense(val id: Int,
                    val date: Date,
+                   val chargeDate: Date,
                    val amount: Double,
                    val name: String,
                    val asmachta: Int? = null,
