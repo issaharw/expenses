@@ -21,11 +21,10 @@ fun Long.formatDate(datePattern: String, timeZone: String = "UTC"): String {
     return sdf.format(this)
 }
 
-fun String.parseDate(datePattern: String, timeZone: String = "UTC"): Long {
+fun String.parseDate(datePattern: String, timeZone: String = "UTC"): Date {
     val sdf = SimpleDateFormat(datePattern)
     sdf.timeZone = TimeZone.getTimeZone(timeZone)
-    val date = sdf.parse(this)
-    return date.time
+    return sdf.parse(this)
 }
 
 fun getYearsBetween(olderDate: String, recentDate: String, formatPattern: String): Int {

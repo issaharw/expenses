@@ -93,6 +93,6 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
             asmachtaCell.numericCellValue.toInt()
         else
             asmachtaCell.stringCellValue.toInt()
-        return Expense(0, date, chargeDate, amount, name, asmachta, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardIsrael)
+        return Expense(0, date, chargeDate, amount, name, asmachta, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardAbroad)
     }
 }
