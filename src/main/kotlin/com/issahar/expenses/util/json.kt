@@ -19,7 +19,7 @@ fun improvedJsonMapper(): ObjectMapper {
 
 fun ObjectMapper.applySettings(): ObjectMapper {
     return this
-        .registerModule(KotlinModule()) // Allows using 1. `@JsonProperty` without `:field`, 2. A single constructor (no need to set default values in all fields)
+        .registerModule(KotlinModule.Builder().build()) // Allows using 1. `@JsonProperty` without `:field`, 2. A single constructor (no need to set default values in all fields)
 //            .registerModule(JavaTimeModule()) // Allow to serialize Java 8 Date/Time API (e.g. LocalDate)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) // Allow deserialize json with unknown (= extra) properties similar to @JsonIgnoreProperties(ignoreUnknown = true)
         .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true) // Throws an error if primitive types have null

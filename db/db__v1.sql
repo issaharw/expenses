@@ -16,14 +16,22 @@ CREATE TABLE `Expenses` (
 CREATE TABLE `Categories` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `category` varchar(200) NOT NULL,
+  `parent_category` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
-CREATE TABLE `ExpenseCategory` (
+CREATE TABLE `ExpenseNameCategory` (
   `expense_name` varchar(300) NOT NULL
-  `category_name` varchar(200) DEFAULT NULL
+  `category_id` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `ExpenseCategory` (
+  `expense_id` bigint NOT NULL
+  `category_id` bigint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 
 CREATE TABLE `Users` (
   `id` bigint NOT NULL AUTO_INCREMENT,

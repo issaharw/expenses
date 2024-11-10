@@ -2,15 +2,16 @@ package com.issahar.expenses
 
 import com.issahar.expenses.excel.MaxCreditCardFileParser
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 import java.io.FileInputStream
 
 
 @SpringBootApplication
 class ExpensesApplication
 
-fun main(args: Array<String>) {
-//	runApplication<UltraCloudApplication>(*args)
-	testing()
+fun main(vararg args: String) {
+	runApplication<ExpensesApplication>(*args)
+//	testing()
 }
 
 

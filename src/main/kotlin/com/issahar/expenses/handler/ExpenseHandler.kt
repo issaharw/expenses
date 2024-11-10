@@ -2,6 +2,7 @@ package com.issahar.expenses.handler
 
 import com.issahar.expenses.dao.ExpenseDao
 import com.issahar.expenses.di.Config
+import com.issahar.expenses.excel.ParserFactory
 import com.issahar.expenses.model.*
 import com.issahar.expenses.storage.Storage
 import com.issahar.expenses.util.httpPost
@@ -10,20 +11,25 @@ import com.issahar.expenses.util.parsePatientName
 import jakarta.inject.Inject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 @Component
 class ExpenseHandler @Inject constructor(private val config: Config,
                                          private val expenseDao: ExpenseDao,
-                                         private val storage: Storage)
+                                         private val storage: Storage,
+                                         private val parserFactory: ParserFactory)
 {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun handleExpensesFile(inputStream: InputStream, expensesFileType: ExpensesFileType) {
+        val parser = parserFactory.getParser(expensesFileType)
+        val expenses = parser.parseFile(inputStream)
+        val savedExpenses = expenses.map {
+            val id = expenseDao.addExpense(it)
+            it.copy(id = id)
+        }
+
 //        val dcmTempFile = storage.getFileFromTemp(filePath) ?: return null
 //        val clipFromDB = clipDao.getClip("")
 //        val clip = if (clipFromDB == null) {
