@@ -22,11 +22,11 @@ class LoggingFilter: Filter {
         val request = servletRequest as HttpServletRequest
         val response = servletResponse as HttpServletResponse
         if (!request.requestURI.startsWith("/health")) {
-            logger.info("(${request.getParameter("username")}) ${request.method} ${request.requestURI} (Received)")
+            logger.info("(${request.getAttribute("userId")}) ${request.method} ${request.requestURI} (Received)")
         }
         filterChain.doFilter(request, response)
         if (!request.requestURI.startsWith("/health")) {
-            logger.info("(${request.getParameter("username")}) ${request.method} ${request.requestURI} ${response.status}")
+            logger.info("(${request.getAttribute("userId")}) ${request.method} ${request.requestURI} ${response.status}")
         }
     }
 

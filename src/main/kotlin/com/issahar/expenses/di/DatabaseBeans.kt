@@ -52,13 +52,13 @@ class DatabaseBeans @Inject constructor(private val config: Config) {
         return dbi.onDemand(UserDao::class.java)
     }
 
-    private fun getDatabaseDetails(): Triple<String, String, String> {
-        val client = SecretsManagerClient.builder().region(Region.US_EAST_2).build()
-        val getSecretValueRequest = GetSecretValueRequest.builder().secretId(config.databaseSecretKey).build()
-
-        val getSecretValueResponse = client.getSecretValue(getSecretValueRequest)
-        val secret = getSecretValueResponse.secretString()
-        val secretValues = mapper.readValue<Map<String,String>>(secret)
-        return Triple(secretValues["host"]!! + ":" + secretValues["port"]!!, secretValues["username"]!!, secretValues["password"]!!)
-    }
+//    private fun getDatabaseDetails(): Triple<String, String, String> {
+//        val client = SecretsManagerClient.builder().region(Region.US_EAST_2).build()
+//        val getSecretValueRequest = GetSecretValueRequest.builder().secretId(config.databaseSecretKey).build()
+//
+//        val getSecretValueResponse = client.getSecretValue(getSecretValueRequest)
+//        val secret = getSecretValueResponse.secretString()
+//        val secretValues = mapper.readValue<Map<String,String>>(secret)
+//        return Triple(secretValues["host"]!! + ":" + secretValues["port"]!!, secretValues["username"]!!, secretValues["password"]!!)
+//    }
 }

@@ -18,7 +18,4 @@ class Config {
 
     @Value("\${s3.bucket.name}")
     val s3BucketName: String? = null
-
-    @Value("\${DATABASE_SECRET_KEY}")
-    val databaseSecretKey: String? = null
 }
