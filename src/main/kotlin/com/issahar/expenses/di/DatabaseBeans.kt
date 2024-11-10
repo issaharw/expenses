@@ -23,28 +23,14 @@ class DatabaseBeans @Inject constructor(private val config: Config) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Bean
-    @Profile("!local")
-    fun dataSource(): DataSource? {
-        val (host, user, password) = getDatabaseDetails()
-        logger.info("Using DB on AWS. Host: $host")
-        return DataSourceBuilder
-            .create()
-            .url("jdbc:mysql://${host}/cloud")
-            .username(user)
-            .password(password)
-            .build()
-    }
-
-    @Bean
-    @Profile("local")
     fun dataSourceForLocal(): DataSource? {
-        val dbUrl = "jdbc:mysql://${config.dbServerHost}/cloud"
+        val dbUrl = "jdbc:mysql://${config.dbServerHost}/expenses"
         logger.info("Using local DB. Url: $dbUrl")
         return DataSourceBuilder
             .create()
             .url(dbUrl)
-            .username("root")
-            .password("Ultrasight1!")
+            .username(config.dbUser)
+            .password(config.dbPassword)
             .build()
     }
 
@@ -57,8 +43,8 @@ class DatabaseBeans @Inject constructor(private val config: Config) {
     }
 
     @Bean
-    fun expenseDao(dbi: Jdbi): ExpenseDao {
-        return dbi.onDemand(ExpenseDao::class.java)
+    fun categoryDao(dbi: Jdbi): CategoryDao {
+        return dbi.onDemand(CategoryDao::class.java)
     }
 
     @Bean

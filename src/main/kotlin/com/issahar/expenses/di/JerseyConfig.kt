@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component
 @Component
 class JerseyConfig : ResourceConfig() {
     init {
-        register(MultiPartFeature::class.java)
+//        register(MultiPartFeature::class.java)
         register(HealthResource::class.java)
-        register(ExpenseResource::class.java)
+        register(CategoryResource::class.java)
+//        register(ExpenseResource::class.java)
     }
 }

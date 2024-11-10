@@ -16,42 +16,36 @@ import com.issahar.expenses.model.*
 import com.issahar.expenses.util.*
 
 
-@RegisterRowMappers(RegisterRowMapper(CategoryMapper::class), RegisterRowMapper(ExpenseNameCategoryMapper::class))
+@RegisterRowMappers(RegisterRowMapper(CategoryMapper::class))
 interface CategoryDao : SqlObject, Transactional<CategoryDao> {
 
     @SqlQuery(
-        """SELECT expense_name, c.id, c.category, c.parent_category
-           FROM ExpenseNameCategory JOIN Categories c ON (c.id = category_id)"""
+        """SELECT id, category, parent_category FROM Categories"""
     )
-    fun getExpenseNameCategories(): List<ExpenseNameCategory>
+    fun getCategories(): List<Category>
 
-    @SqlUpdate("""INSERT INTO Expenses
+    @SqlUpdate("""INSERT INTO Categories
           (
-            expense_date,
-            charge_date,
-            amount,
-            name,
-            asmacta,
-            original_amount,
-            details,
-            expense_type,
-            creation_time
+            category,
+            parent_category
           )
           VALUES (
-            :date,
-            :chargeDate,
-            :amount,
             :name,
-            :asmachta,
-            :originalAnmount,
-            :details,
-            :expenseTypeValue,
-            FROM_UNIXTIME(:creationTime * 0.001)
+            :parent
           )"""
     )
     @GetGeneratedKeys
-    fun addExpense(@BindBean expense: Expense): Int
+    fun addCategory(@BindBean category: Category): Int
+
+    @SqlUpdate("""UPDATE Categories SET
+          category = :name,
+          parent_category = :parent
+          WHERE id = :id"""
+    )
+    fun updateCategory(@BindBean category: Category)
+
 }
+
 
 class CategoryMapper : RowMapper<Category> {
     override fun map(resultSet: ResultSet, statementContext: StatementContext): Category {
@@ -63,17 +57,17 @@ class CategoryMapper : RowMapper<Category> {
     }
 }
 
-class ExpenseNameCategoryMapper : RowMapper<ExpenseNameCategory> {
-    override fun map(resultSet: ResultSet, statementContext: StatementContext): ExpenseNameCategory {
-        val category = Category(
-            resultSet.getInt("id"),
-            resultSet.getString("category"),
-            resultSet.getInt("parent_category")
-        )
-        return ExpenseNameCategory(
-            resultSet.getString("expense_name"),
-            category
-        )
-    }
-}
+//class ExpenseNameCategoryMapper : RowMapper<ExpenseNameCategory> {
+//    override fun map(resultSet: ResultSet, statementContext: StatementContext): ExpenseNameCategory {
+//        val category = Category(
+//            resultSet.getInt("id"),
+//            resultSet.getString("category"),
+//            resultSet.getInt("parent_category")
+//        )
+//        return ExpenseNameCategory(
+//            resultSet.getString("expense_name"),
+//            category
+//        )
+//    }
+//}
 

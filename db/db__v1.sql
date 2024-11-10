@@ -1,3 +1,11 @@
+CREATE TABLE `Categories` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `category` varchar(200) NOT NULL,
+  `parent_category` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+
 CREATE TABLE `Expenses` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `expense_date` date NOT NULL,
@@ -12,13 +20,6 @@ CREATE TABLE `Expenses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
-
-CREATE TABLE `Categories` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `category` varchar(200) NOT NULL,
-  `parent_category` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `ExpenseNameCategory` (

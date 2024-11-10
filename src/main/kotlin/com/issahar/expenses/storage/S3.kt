@@ -93,7 +93,7 @@ class S3 @Inject constructor(val s3Client: S3Client,
             val data: ByteArray = objectBytes.asByteArray()
 
             // Write the data to a local file.
-            val tempFile = File("${config.tempFolder}/${filePath}")
+            val tempFile = File("/temp/${filePath}")
             tempFile.writeBytes(data)
             return tempFile
         } catch (e: S3Exception) {

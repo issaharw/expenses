@@ -15,16 +15,17 @@ class LocalStorage @Inject constructor(val config: Config): Storage {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun saveFile(filePath: String, file: File): Boolean {
-        return try {
-            val destFile = File(config.localStorageFolder, filePath)
-            destFile.parentFile.mkdirs()
-            destFile.writeBytes(file.readBytes())
-            true
-        }
-        catch (e: IOException) {
-            logger.error("Failed to save file to local disk. Path: $filePath", e)
-            false
-        }
+        return true
+//        return try {
+//            val destFile = File(config.localStorageFolder, filePath)
+//            destFile.parentFile.mkdirs()
+//            destFile.writeBytes(file.readBytes())
+//            true
+//        }
+//        catch (e: IOException) {
+//            logger.error("Failed to save file to local disk. Path: $filePath", e)
+//            false
+//        }
     }
 
     override fun getFileUrl(filePath: String): String {
@@ -32,10 +33,10 @@ class LocalStorage @Inject constructor(val config: Config): Storage {
     }
 
     override fun getUploadFileUrl(filePath: String): String {
-        return "${config.beServerHost}/clips/upload/${filePath.replace("/", "^^")}"
+        return "${config.dbServerHost}/clips/upload/${filePath.replace("/", "^^")}"
     }
 
     override fun getFileFromTemp(filePath: String): File {
-        return File("${config.tempFolder}/${filePath}")
+        return File("${config.dbServerHost}/${filePath}")
     }
 }
