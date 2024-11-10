@@ -5,7 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 **/*.onnx
-local-docker-scripts/ultracloud/**
+scripts/local-docker-scripts/ultracloud/**
 log/*
 **/application-prod.properties
 
