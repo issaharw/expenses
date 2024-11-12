@@ -1,17 +1,9 @@
 package com.issahar.expenses.util
 
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneOffset
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
-
-const val LICENSE_DATE_TIME_FORMAT = "MMM dd, yyy HH:mm:ss"
-const val EXPORT_DICOM_DATE_TIME_FORMAT = "yyyyMMddHHmmss.SSSSSS"
-const val EXPORT_DICOM_DATE_FORMAT = "yyyyMMdd"
-const val UI_BIRTHDATE_FORMAT = "dd/MM/yyyy"
 
 fun now() = System.currentTimeMillis()
 
@@ -38,20 +30,13 @@ fun Long.asStartOfDay(zoneOffset: ZoneOffset = ZoneOffset.UTC): Long {
     return Instant.ofEpochMilli(this).atOffset(ZoneOffset.UTC).toLocalDate().atStartOfDay(zoneOffset).toInstant().toEpochMilli()
 }
 
-fun getFullName(firstName: String?, middleName: String?, lastName: String?): String {
-    val first = firstName?:""
-    val middle = middleName?:""
-    val last = lastName?:""
-    return if (middle.isEmpty()) "$first $last".trim()
-    else "$first $middle $last".trim()
-}
-
-fun parsePatientName(patientName: String?): Triple<String?, String?, String?> {
-    if (patientName == null)
-        return Triple(null, null, null)
-    val names = patientName.split('^')
-    val lastName = names.first().ifEmpty { null }
-    val firstName = if (names.size > 1) names[1].ifEmpty { null } else null
-    val middleName = if (names.size > 2) names[2].ifEmpty { null } else null
-    return Triple(firstName, middleName, lastName)
+fun getCurrentBudgetMonth(): String {
+    val israelZoneId = ZoneId.of("Asia/Jerusalem")
+    val todayInIsrael = ZonedDateTime.now(israelZoneId).toLocalDate()
+    val adjustedDate = if (todayInIsrael.dayOfMonth >= 10) {
+        todayInIsrael
+    } else {
+        todayInIsrael.minusMonths(1)
+    }
+    return adjustedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 }

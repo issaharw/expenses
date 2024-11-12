@@ -62,6 +62,13 @@ class BudgetResource @Inject constructor(private val budgetService: BudgetServic
         return budgetService.getBudgetItems(userId)
     }
 
+    @GET
+    @Path("/budgetItems/currentMonth")
+    @Produces("application/json")
+    fun getBudgetItemsForCurrentMonth(): List<BudgetItem> {
+        return budgetService.getBudgetItemsForCurrentMonth(userId)
+    }
+
     @POST
     @Path("/budgetItems")
     @Consumes("application/json")

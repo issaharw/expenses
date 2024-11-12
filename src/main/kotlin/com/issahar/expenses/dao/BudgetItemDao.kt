@@ -24,6 +24,13 @@ interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
     )
     fun getBudgetItems(userId: Int): List<BudgetItem>
 
+    @SqlQuery(
+        """SELECT b.budget_month, b.category_id, b.amount, c.category, c.parent_category 
+           FROM BudgetItems as b join Categories as c on (b.category_id = c.id)
+           WHERE b.user_id = :userId AND b.budget_month = :month"""
+    )
+    fun getBudgetItemsForMonth(userId: Int, month: String): List<BudgetItem>
+
     @SqlUpdate("""INSERT INTO BudgetItems
           (
             user_id,

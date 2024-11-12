@@ -6,6 +6,7 @@ import com.issahar.expenses.excel.ExcelBudgetParser
 import com.issahar.expenses.model.BudgetItem
 import com.issahar.expenses.model.BudgetItemDO
 import com.issahar.expenses.model.Category
+import com.issahar.expenses.util.getCurrentBudgetMonth
 import jakarta.inject.Inject
 import org.springframework.stereotype.Service
 import java.io.InputStream
@@ -29,6 +30,11 @@ class BudgetService @Inject constructor(private val categoryDao: CategoryDao, pr
     fun updateBudgetItem(userId: Int, budgetMonth: String, categoryName: String, amount: Int) {
         val category = categoryDao.getCategoryByName(userId, categoryName)
         budgetItemDao.updateBudgetItem(userId, budgetMonth, category.id, amount)
+    }
+
+    fun getBudgetItemsForCurrentMonth(userId: Int): List<BudgetItem> {
+        val currentMonth = getCurrentBudgetMonth()
+        return budgetItemDao.getBudgetItemsForMonth(userId, currentMonth)
     }
 
     fun parseBudgetExcel(userId: Int, excelIS: InputStream) {
