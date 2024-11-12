@@ -52,6 +52,11 @@ class DatabaseBeans @Inject constructor(private val config: Config) {
         return dbi.onDemand(UserDao::class.java)
     }
 
+    @Bean
+    fun budgetItemDao(dbi: Jdbi): BudgetItemDao {
+        return dbi.onDemand(BudgetItemDao::class.java)
+    }
+
 //    private fun getDatabaseDetails(): Triple<String, String, String> {
 //        val client = SecretsManagerClient.builder().region(Region.US_EAST_2).build()
 //        val getSecretValueRequest = GetSecretValueRequest.builder().secretId(config.databaseSecretKey).build()

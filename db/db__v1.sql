@@ -1,8 +1,26 @@
+CREATE TABLE `Users` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 CREATE TABLE `Categories` (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
   `category` varchar(200) NOT NULL,
   `parent_category` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `BudgetItems` (
+  `user_id` bigint NOT NULL,
+  `budget_month` varchar(10) NOT NULL,
+  `category_id` bigint NOT NULL,
+  `amount` bigint DEFAULT NULL,
+  PRIMARY KEY (`user_id`, `budget_month`, `category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
@@ -34,11 +52,3 @@ CREATE TABLE `ExpenseCategory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
-CREATE TABLE `Users` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
-  `first_name` varchar(255) DEFAULT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT 1,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;

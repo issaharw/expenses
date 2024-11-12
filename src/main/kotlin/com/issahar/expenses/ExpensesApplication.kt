@@ -1,5 +1,6 @@
 package com.issahar.expenses
 
+import com.issahar.expenses.excel.ExcelBudgetParser
 import com.issahar.expenses.excel.MaxCreditCardFileParser
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -16,9 +17,9 @@ fun main(vararg args: String) {
 
 
 fun testing() {
-	val fis = FileInputStream("/Users/issahar/Downloads/transaction-details-February.xlsx")
+	val fis = FileInputStream("/Users/issahar/Downloads/budget.xlsx")
 
-	val parser = MaxCreditCardFileParser()
-	val expenses = parser.parseFile(fis)
-	println(expenses.size)
+	val parser = ExcelBudgetParser()
+	val items = parser.parseExcelBudget(fis)
+	println(items.size)
 }
