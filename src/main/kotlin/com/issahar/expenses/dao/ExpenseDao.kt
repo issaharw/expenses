@@ -19,35 +19,41 @@ import com.issahar.expenses.model.*
 interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
 
     @SqlQuery(
-        """select
+        """SELECT
             id,
             expense_date,
-            name,
+            e.name,
             amount,
             charge_month,
             asmacta,
             original_amount,
             details,
             expense_type,
+            category_name,
+            parent_category,
             creation_time
-          from Expenses
+          FROM Expenses as e
+          LEFT JOIN Categories as c on (e.category_name = c.name)
           WHERE user_id = :userId"""
     )
     fun getExpenses(@Bind userId: Int): List<Expense>
 
     @SqlQuery(
-        """select
+        """SELECT
             id,
             expense_date,
-            name,
+            e.name,
             amount,
             charge_month,
             asmacta,
             original_amount,
             details,
             expense_type,
+            category_name,
+            parent_category,
             creation_time
-          from Expenses
+          FROM Expenses as e
+          LEFT JOIN Categories as c on (e.category_name = c.name)
           WHERE user_id = :userId AND charge_month = :chargeMonth"""
     )
     fun getExpensesForMonth(@Bind userId: Int, @Bind chargeMonth: String): List<Expense>
@@ -63,6 +69,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             original_amount,
             details,
             expense_type,
+            category_name,
             creation_time
           )
           VALUES (
@@ -75,6 +82,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             :originalAmount,
             :details,
             :expenseTypeValue,
+            :category.name
             FROM_UNIXTIME(:creationTime * 0.001)
           )"""
     )
@@ -84,6 +92,10 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
 
 class ExpenseMapper : RowMapper<Expense> {
     override fun map(resultSet: ResultSet, statementContext: StatementContext): Expense {
+        val category = Category(
+            resultSet.getString("category_name"),
+            resultSet.getString("parent_category")
+        )
         return Expense(
             resultSet.getInt("id"),
             resultSet.getDate("expense_date"),
@@ -94,6 +106,7 @@ class ExpenseMapper : RowMapper<Expense> {
             resultSet.getFloat("original_amount").toDouble(),
             resultSet.getString("details"),
             ExpenseType.fromValue(resultSet.getInt("expense_type")),
+            category,
             resultSet.getTimestamp("creation_time").time
         )
     }

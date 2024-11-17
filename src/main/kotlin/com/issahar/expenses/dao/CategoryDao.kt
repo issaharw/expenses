@@ -15,7 +15,7 @@ import java.sql.ResultSet
 import com.issahar.expenses.model.*
 
 
-@RegisterRowMappers(RegisterRowMapper(CategoryMapper::class))
+@RegisterRowMappers(RegisterRowMapper(CategoryMapper::class), RegisterRowMapper(ExpenseNameCategoryMapper::class))
 interface CategoryDao : SqlObject, Transactional<CategoryDao> {
 
     @SqlQuery(
@@ -33,6 +33,14 @@ interface CategoryDao : SqlObject, Transactional<CategoryDao> {
     )
     fun getCategoryByName(@Bind userId: Int, @Bind name: String): Category
 
+    @SqlQuery(
+        """SELECT enc.expense_name, enc.category_name, c.parent_category 
+           FROM ExpenseNameCategory as enc JOIN Categories as c on (enc.category_name = c.name)
+           WHERE user_id = :userId
+        """
+    )
+    fun getExpenseNameCategories(@Bind userId: Int): ExpenseNameCategory
+
     @SqlUpdate(
         """INSERT INTO Categories
           (
@@ -48,6 +56,22 @@ interface CategoryDao : SqlObject, Transactional<CategoryDao> {
     )
     @GetGeneratedKeys
     fun addCategory(@Bind userId: Int, @BindBean category: Category): Int
+
+    @SqlUpdate(
+        """INSERT INTO ExpenseNameCategory
+          (
+            user_id,
+            expense_name,
+            category_name
+          )
+          VALUES (
+            :userId,
+            :expenseName
+            :category.name
+          )"""
+    )
+    @GetGeneratedKeys
+    fun addExpenseNameCategory(@Bind userId: Int, @BindBean expenseNameCategory: ExpenseNameCategory): Int
 }
 
 
@@ -56,6 +80,20 @@ class CategoryMapper : RowMapper<Category> {
         return Category(
             resultSet.getString("name"),
             resultSet.getString("parent_category")
+        )
+    }
+}
+
+class ExpenseNameCategoryMapper : RowMapper<ExpenseNameCategory> {
+    override fun map(resultSet: ResultSet, statementContext: StatementContext): ExpenseNameCategory {
+        val category = Category(
+            resultSet.getString("category_name"),
+            resultSet.getString("parent_category")
+        )
+
+        return ExpenseNameCategory(
+            resultSet.getString("expense_name"),
+            category
         )
     }
 }

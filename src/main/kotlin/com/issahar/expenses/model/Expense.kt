@@ -12,6 +12,7 @@ data class Expense(val id: Int,
                    val originalAmount: Double? = null,
                    val details: String? = null,
                    val expenseType: ExpenseType = ExpenseType.Bank,
+                   val category: Category? = null,
                    val creationTime: Long = now()) {
     val expenseTypeValue = expenseType.value
 }

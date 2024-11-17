@@ -33,19 +33,15 @@ CREATE TABLE `Expenses` (
   `original_amount` float(2) DEFAULT NULL,
   `details` varchar(300) DEFAULT NULL,
   `expense_type` int NOT NULL,
+  `category_name` varchar(200) DEFAULT NULL,
   `creation_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE `ExpenseNameCategory` (
+  `user_id` bigint NOT NULL,
   `expense_name` varchar(300) NOT NULL,
   `category_name` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
-CREATE TABLE `ExpenseCategory` (
-  `expense_id` bigint NOT NULL,
-  `category_name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
 
 
