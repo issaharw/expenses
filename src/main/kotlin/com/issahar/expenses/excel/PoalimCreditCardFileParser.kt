@@ -22,7 +22,7 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
                 break
             else
                 lastRowNum = row.rowNum
-            expenses.add(getIsraelExpenseFromRow(row))
+            expenses.add(getIsraelExpenseFromRow(row, "2024-12"))
         }
         val abroadRowIterator = mySheet.iterator()
         lastRowNum = findAbroadChargesFirstLine(abroadRowIterator)
@@ -33,7 +33,7 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
                 break
             else
                 lastRowNum = row.rowNum
-            expenses.add(getAbroadExpenseFromRow(row))
+            expenses.add(getAbroadExpenseFromRow(row, "2024-12"))
         }
         return expenses
     }
@@ -65,7 +65,7 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
         return rowNum
     }
 
-    private fun getIsraelExpenseFromRow(row: Row): Expense {
+    private fun getIsraelExpenseFromRow(row: Row, chargeMonth: String): Expense {
         val cardName = row.getCell(0).stringCellValue
         val chargeDate = row.getCell(1).dateCellValue
         val date = row.getCell(2).dateCellValue
@@ -77,10 +77,10 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
             asmachtaCell.numericCellValue.toInt()
         else
             asmachtaCell.stringCellValue.toInt()
-        return Expense(0, date, chargeDate, amount, name, asmachta, originalAmount, "Card Name: $cardName", ExpenseType.CreditCardIsrael)
+        return Expense(0, date, name, amount, chargeMonth, asmachta, originalAmount, "Card Name: $cardName", ExpenseType.CreditCardIsrael)
     }
 
-    private fun getAbroadExpenseFromRow(row: Row): Expense {
+    private fun getAbroadExpenseFromRow(row: Row, chargeMonth: String): Expense {
         val cardName = row.getCell(0).stringCellValue
         val chargeDate = row.getCell(1).dateCellValue
         val date = row.getCell(2).dateCellValue
@@ -93,6 +93,6 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
             asmachtaCell.numericCellValue.toInt()
         else
             asmachtaCell.stringCellValue.toInt()
-        return Expense(0, date, chargeDate, amount, name, asmachta, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardAbroad)
+        return Expense(0, date, name, amount, chargeMonth, asmachta, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardAbroad)
     }
 }

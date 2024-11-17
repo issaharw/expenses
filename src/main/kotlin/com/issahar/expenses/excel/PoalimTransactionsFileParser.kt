@@ -19,19 +19,19 @@ class PoalimTransactionsFileParser: ExpensesFileParser {
         }
         rowIterator.forEachRemaining { row ->
             println("Row Number: ${row.rowNum}")
-            expenses.add(getExpenseFromRow(row))
+            expenses.add(getExpenseFromRow(row, "2024-12"))
         }
         return expenses
     }
 
 
-    private fun getExpenseFromRow(row: Row): Expense {
+    private fun getExpenseFromRow(row: Row, chargeMonth: String): Expense {
         val date = row.getCell(0).dateCellValue
         val name  = row.getCell(1).stringCellValue
         val details  = row.getCell(2)?.stringCellValue
         val asmachta = row.getCell(3).numericCellValue.toInt()
         val amount = getAmount(row)
-        return Expense(0, date, date, amount, name, asmachta, null, details, ExpenseType.Bank)
+        return Expense(0, date, name, amount, chargeMonth, asmachta, null, details, ExpenseType.Bank)
     }
 
     private fun getAmount(row: Row): Double {

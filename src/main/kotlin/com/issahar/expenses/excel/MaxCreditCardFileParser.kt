@@ -2,6 +2,9 @@ package com.issahar.expenses.excel
 
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpenseType
+import com.issahar.expenses.util.budgetMonth
+import com.issahar.expenses.util.budgetMonthFromChargeDate
+import com.issahar.expenses.util.localDate
 import com.issahar.expenses.util.parseDate
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFSheet
@@ -43,7 +46,7 @@ class MaxCreditCardFileParser: ExpensesFileParser {
             val firstCell = row.getCell(0).stringCellValue
             if (firstCell == "סך הכל")
                 break
-            expenses.add(getAbroadExpenseFromRow(row))
+            expenses.add(getAbroadExpenseFromRow(row, false))
         }
 
 
@@ -56,13 +59,13 @@ class MaxCreditCardFileParser: ExpensesFileParser {
         val cardName = row.getCell(3).stringCellValue
         val amount = row.getCell(5).numericCellValue
         val originalAmount = row.getCell(7).numericCellValue
-        val chargeDate = row.getCell(9).stringCellValue.toDate()
+        val budgetMonth = row.getCell(9).stringCellValue.toDate().budgetMonthFromChargeDate()
         val comment = row.getCell(10).stringCellValue
         val tags = row.getCell(11).stringCellValue
-        return Expense(0, date, chargeDate, amount, name, null, originalAmount, "Comment: $comment. Tags: $tags", ExpenseType.CreditCardIsrael)
+        return Expense(0, date, name, amount, budgetMonth, null, originalAmount, "Comment: $comment. Tags: $tags", ExpenseType.CreditCardIsrael)
     }
 
-    private fun getAbroadExpenseFromRow(row: Row): Expense {
+    private fun getAbroadExpenseFromRow(row: Row, isImmediateCharge: Boolean = false): Expense {
         val date = row.getCell(0).stringCellValue.toDate()
         val name  = row.getCell(1).stringCellValue
         val cardName = row.getCell(3).stringCellValue
@@ -70,7 +73,8 @@ class MaxCreditCardFileParser: ExpensesFileParser {
         val originalAmount = row.getCell(7).numericCellValue
         val originalCurrency = row.getCell(8).stringCellValue
         val chargeDate = row.getCell(9).stringCellValue.toDate()
-        return Expense(0, date, chargeDate, amount, name, null, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardAbroad)
+        val budgetMonth = if (isImmediateCharge) chargeDate.localDate().budgetMonth() else chargeDate.budgetMonthFromChargeDate()
+        return Expense(0, date, name, amount, budgetMonth, null, originalAmount, "Card: $cardName. Original Currency: $originalCurrency", ExpenseType.CreditCardAbroad)
     }
 
     private fun String.toDate(): Date = this.parseDate("dd-MM-yyyy")
