@@ -46,15 +46,6 @@ class BudgetResource @Inject constructor(private val budgetService: BudgetServic
         return categories.size
     }
 
-    @PUT
-    @Path("/categories/{id}")
-    @Consumes("application/json")
-    @Produces("application/json")
-    fun updateCategory(@PathParam("id") id: Int, category: Category) {
-        val updatedCategory = category.copy(id = id)
-        budgetService.updateCategory(updatedCategory)
-    }
-
     @GET
     @Path("/budgetItems")
     @Produces("application/json")

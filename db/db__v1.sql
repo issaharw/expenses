@@ -8,21 +8,19 @@ CREATE TABLE `Users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE `Categories` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
-  `category` varchar(200) NOT NULL,
-  `parent_category` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `name` varchar(200) NOT NULL,
+  `parent_category` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE `BudgetItems` (
   `user_id` bigint NOT NULL,
   `budget_month` varchar(10) NOT NULL,
-  `category_id` bigint NOT NULL,
+  `category_name` varchar(200) NOT NULL,
   `amount` bigint DEFAULT NULL,
-  PRIMARY KEY (`user_id`, `budget_month`, `category_id`)
+  PRIMARY KEY (`user_id`, `budget_month`, `category_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
 
 CREATE TABLE `Expenses` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -39,17 +37,15 @@ CREATE TABLE `Expenses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
-
-
 CREATE TABLE `ExpenseNameCategory` (
-  `expense_name` varchar(300) NOT NULL
-  `category_id` bigint NOT NULL
+  `expense_name` varchar(300) NOT NULL,
+  `category_name` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
 
 CREATE TABLE `ExpenseCategory` (
-  `expense_id` bigint NOT NULL
-  `category_id` bigint NOT NULL
+  `expense_id` bigint NOT NULL,
+  `category_name` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 
 

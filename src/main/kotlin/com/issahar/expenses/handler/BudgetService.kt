@@ -18,8 +18,6 @@ class BudgetService @Inject constructor(private val categoryDao: CategoryDao, pr
 
     fun addCategory(userId: Int, category: Category): Int = categoryDao.addCategory(userId, category)
 
-    fun updateCategory(category: Category) = categoryDao.updateCategory(category)
-
     fun getBudgetItems(userId: Int): List<BudgetItem> = budgetItemDao.getBudgetItems(userId)
 
     fun addBudgetItem(userId: Int, item: BudgetItemDO){
@@ -29,7 +27,7 @@ class BudgetService @Inject constructor(private val categoryDao: CategoryDao, pr
 
     fun updateBudgetItem(userId: Int, budgetMonth: String, categoryName: String, amount: Int) {
         val category = categoryDao.getCategoryByName(userId, categoryName)
-        budgetItemDao.updateBudgetItem(userId, budgetMonth, category.id, amount)
+        budgetItemDao.updateBudgetItem(userId, budgetMonth, category.name, amount)
     }
 
     fun getBudgetItemsForCurrentMonth(userId: Int): List<BudgetItem> {

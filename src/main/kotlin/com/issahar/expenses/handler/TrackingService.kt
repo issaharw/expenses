@@ -1,7 +1,8 @@
 package com.issahar.expenses.handler
 
+import com.issahar.expenses.dao.CategoryDao
 import com.issahar.expenses.dao.ExpenseDao
-import com.issahar.expenses.excel.ExcelBudgetParser
+import com.issahar.expenses.excel.ParserFactory
 import com.issahar.expenses.model.*
 import com.issahar.expenses.util.getCurrentBudgetMonth
 import jakarta.inject.Inject
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service
 import java.io.InputStream
 
 @Service
-class TrackingService @Inject constructor(private val expenseDao: ExpenseDao) {
+class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
+                                          private val parserFactory: ParserFactory,
+                                          private val categoryDao: CategoryDao) {
 
     fun getExpenses(userId: Int): List<Expense> = expenseDao.getExpenses(userId)
 
@@ -24,5 +27,10 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao) {
     }
 
     fun parseExpensesExcel(userId: Int, excelIS: InputStream, fileType: ExpensesFileType) {
+        val parser = parserFactory.getParser(fileType)
+        val expenses = parser.parseFile(excelIS)
+        expenses.forEach {
+            addExpense(userId, it)
+        }
     }
 }

@@ -4,6 +4,7 @@ enum class ExpensesFileType(val value: String) {
     BankPoalimTransactions("poalimTransactions"),
     CreditCardFromPoalim("poalimCard"),
     CreditCardFromMax("maxCard"),
+    CreditCardFromCal("calCard"),
     Unknown("unknown");
 
     companion object {

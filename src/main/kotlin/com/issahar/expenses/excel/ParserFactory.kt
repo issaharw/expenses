@@ -11,6 +11,7 @@ class ParserFactory {
             ExpensesFileType.BankPoalimTransactions -> PoalimTransactionsFileParser()
             ExpensesFileType.CreditCardFromPoalim -> PoalimCreditCardFileParser()
             ExpensesFileType.CreditCardFromMax -> MaxCreditCardFileParser()
+            ExpensesFileType.CreditCardFromCal -> CalCreditCardFileParser()
             else -> throw IllegalArgumentException("Parser of type $type is not supported")
         }
     }

@@ -18,15 +18,15 @@ import com.issahar.expenses.model.*
 interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
 
     @SqlQuery(
-        """SELECT b.budget_month, b.category_id, b.amount, c.category, c.parent_category 
-           FROM BudgetItems as b join Categories as c on (b.category_id = c.id)
+        """SELECT b.budget_month, b.category_name, b.amount, c.parent_category 
+           FROM BudgetItems as b join Categories as c on (b.category_name = c.name)
            WHERE b.user_id = :userId"""
     )
     fun getBudgetItems(userId: Int): List<BudgetItem>
 
     @SqlQuery(
-        """SELECT b.budget_month, b.category_id, b.amount, c.category, c.parent_category 
-           FROM BudgetItems as b join Categories as c on (b.category_id = c.id)
+        """SELECT b.budget_month, b.category_name, b.amount, c.parent_category 
+           FROM BudgetItems as b join Categories as c on (b.category_name = c.name)
            WHERE b.user_id = :userId AND b.budget_month = :month"""
     )
     fun getBudgetItemsForMonth(userId: Int, month: String): List<BudgetItem>
@@ -35,13 +35,13 @@ interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
           (
             user_id,
             budget_month,
-            category_id,
+            category_name,
             amount
           )
           VALUES (
             :userId,
             :budgetMonth,
-            :category.id,
+            :category.name,
             :amount
           )"""
     )
@@ -49,9 +49,9 @@ interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
 
     @SqlUpdate("""UPDATE BudgetItems SET
           amount = :amount
-          WHERE user_id = :userId, budget_month = :month AND category_id = :categoryId"""
+          WHERE user_id = :userId, budget_month = :month AND category_name = :categoryName"""
     )
-    fun updateBudgetItem(@Bind userId: Int, @Bind month: String, @Bind categoryId: Int, @Bind amount: Int)
+    fun updateBudgetItem(@Bind userId: Int, @Bind month: String, @Bind categoryName: String, @Bind amount: Int)
 
 }
 
@@ -59,9 +59,8 @@ interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
 class BudgetItemMapper : RowMapper<BudgetItem> {
     override fun map(resultSet: ResultSet, statementContext: StatementContext): BudgetItem {
         val category =  Category(
-            resultSet.getInt("category_id"),
-            resultSet.getString("category"),
-            resultSet.getInt("parent_category")
+            resultSet.getString("category_name"),
+            resultSet.getString("parent_category")
         )
         return BudgetItem(
             resultSet.getString("budget_month"),
