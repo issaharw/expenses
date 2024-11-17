@@ -21,16 +21,29 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
     fun getExpensesForCurrentMonth(userId: Int): List<Expense> = expenseDao.getExpensesForMonth(userId, getCurrentBudgetMonth())
 
     fun addExpense(userId: Int, expense: Expense): Int {
-        val expenseId = expenseDao.addExpense(userId, expense)
-        // Handle categories!!!!!!
+        val expenseMap = getExpenseNameMap(userId)
+        val expenseCategory = expenseMap[expense.name]
+        val expenseWithCategory = expense.copy(category = expenseCategory)
+        val expenseId = expenseDao.addExpense(userId, expenseWithCategory)
         return expenseId
     }
 
-    fun parseExpensesExcel(userId: Int, excelIS: InputStream, fileType: ExpensesFileType) {
+    private fun getExpenseNameMap(userId: Int): Map<String, Category> {
+        if (ServerCache.expenseNameCategoryMap.isEmpty()) {
+            val expenseNameCategories = categoryDao.getExpenseNameCategories(userId)
+            val expenseMap = expenseNameCategories.associate { Pair(it.expenseName, it.category) }
+            ServerCache.expenseNameCategoryMap.putAll(expenseMap)
+        }
+
+        return ServerCache.expenseNameCategoryMap
+    }
+
+    fun parseExpensesExcel(userId: Int, excelIS: InputStream, fileType: ExpensesFileType): Int {
         val parser = parserFactory.getParser(fileType)
-        val expenses = parser.parseFile(excelIS)
+        val expenses = parser.parseFile(excelIS).filter { it.amount != 0.0 }
         expenses.forEach {
             addExpense(userId, it)
         }
+        return expenses.size
     }
 }

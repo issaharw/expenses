@@ -33,7 +33,7 @@ class BudgetResource @Inject constructor(private val budgetService: BudgetServic
     @Path("/categories")
     @Consumes("application/json")
     @Produces("application/json")
-    fun addCategory(category: Category): Int = budgetService.addCategory(userId, category)
+    fun addCategory(category: Category) = budgetService.addCategory(userId, category)
 
     @POST
     @Path("/categories/multiple")

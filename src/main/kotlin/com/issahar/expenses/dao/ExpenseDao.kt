@@ -25,7 +25,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             e.name,
             amount,
             charge_month,
-            asmacta,
+            asmachta,
             original_amount,
             details,
             expense_type,
@@ -34,7 +34,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             creation_time
           FROM Expenses as e
           LEFT JOIN Categories as c on (e.category_name = c.name)
-          WHERE user_id = :userId"""
+          WHERE e.user_id = :userId"""
     )
     fun getExpenses(@Bind userId: Int): List<Expense>
 
@@ -45,7 +45,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             e.name,
             amount,
             charge_month,
-            asmacta,
+            asmachta,
             original_amount,
             details,
             expense_type,
@@ -54,7 +54,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             creation_time
           FROM Expenses as e
           LEFT JOIN Categories as c on (e.category_name = c.name)
-          WHERE user_id = :userId AND charge_month = :chargeMonth"""
+          WHERE e.user_id = :userId AND charge_month = :chargeMonth"""
     )
     fun getExpensesForMonth(@Bind userId: Int, @Bind chargeMonth: String): List<Expense>
 
@@ -65,7 +65,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             name,
             amount,
             charge_month,
-            asmacta,
+            asmachta,
             original_amount,
             details,
             expense_type,
@@ -82,7 +82,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             :originalAmount,
             :details,
             :expenseTypeValue,
-            :category.name
+            :category?.name,
             FROM_UNIXTIME(:creationTime * 0.001)
           )"""
     )

@@ -7,7 +7,6 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.config.RegisterRowMappers
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBean
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transactional
@@ -36,10 +35,10 @@ interface CategoryDao : SqlObject, Transactional<CategoryDao> {
     @SqlQuery(
         """SELECT enc.expense_name, enc.category_name, c.parent_category 
            FROM ExpenseNameCategory as enc JOIN Categories as c on (enc.category_name = c.name)
-           WHERE user_id = :userId
+           WHERE enc.user_id = :userId
         """
     )
-    fun getExpenseNameCategories(@Bind userId: Int): ExpenseNameCategory
+    fun getExpenseNameCategories(@Bind userId: Int): List<ExpenseNameCategory>
 
     @SqlUpdate(
         """INSERT INTO Categories
@@ -54,8 +53,7 @@ interface CategoryDao : SqlObject, Transactional<CategoryDao> {
             :parent
           )"""
     )
-    @GetGeneratedKeys
-    fun addCategory(@Bind userId: Int, @BindBean category: Category): Int
+    fun addCategory(@Bind userId: Int, @BindBean category: Category)
 
     @SqlUpdate(
         """INSERT INTO ExpenseNameCategory
@@ -70,8 +68,7 @@ interface CategoryDao : SqlObject, Transactional<CategoryDao> {
             :category.name
           )"""
     )
-    @GetGeneratedKeys
-    fun addExpenseNameCategory(@Bind userId: Int, @BindBean expenseNameCategory: ExpenseNameCategory): Int
+    fun addExpenseNameCategory(@Bind userId: Int, @BindBean expenseNameCategory: ExpenseNameCategory)
 }
 
 

@@ -6,6 +6,7 @@ import com.issahar.expenses.excel.ExcelBudgetParser
 import com.issahar.expenses.model.BudgetItem
 import com.issahar.expenses.model.BudgetItemDO
 import com.issahar.expenses.model.Category
+import com.issahar.expenses.model.ExpenseNameCategory
 import com.issahar.expenses.util.getCurrentBudgetMonth
 import jakarta.inject.Inject
 import org.springframework.stereotype.Service
@@ -16,7 +17,7 @@ class BudgetService @Inject constructor(private val categoryDao: CategoryDao, pr
 
     fun getCategories(userId: Int): List<Category> = categoryDao.getCategories(userId)
 
-    fun addCategory(userId: Int, category: Category): Int = categoryDao.addCategory(userId, category)
+    fun addCategory(userId: Int, category: Category) = categoryDao.addCategory(userId, category)
 
     fun getBudgetItems(userId: Int): List<BudgetItem> = budgetItemDao.getBudgetItems(userId)
 
@@ -35,9 +36,22 @@ class BudgetService @Inject constructor(private val categoryDao: CategoryDao, pr
         return budgetItemDao.getBudgetItemsForMonth(userId, currentMonth)
     }
 
+    fun addExpenseNameCategory(userId: Int, expenseNameCategory: ExpenseNameCategory) {
+        categoryDao.addExpenseNameCategory(userId, expenseNameCategory)
+        ServerCache.expenseNameCategoryMap[expenseNameCategory.expenseName] = expenseNameCategory.category
+    }
+
     fun parseBudgetExcel(userId: Int, excelIS: InputStream) {
         val parser = ExcelBudgetParser()
         val budgetItems = parser.parseExcelBudget(excelIS)
+
+        // Handle new categories from the budget excel
+        val categoriesFromExcel = budgetItems.map { Category(it.category) }.toMutableSet()
+        val dbCategories = categoryDao.getCategories(userId)
+        categoriesFromExcel.removeAll(dbCategories)
+        categoriesFromExcel.forEach { categoryDao.addCategory(userId, it) }
+
+        // Now add or update the budget
         val allBudgetItems = budgetItemDao.getBudgetItems(userId)
         val (toUpdate, toInsert) = budgetItems.partition { item ->
             allBudgetItems.any { it.isTheSame(item) }
