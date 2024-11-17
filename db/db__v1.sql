@@ -26,10 +26,11 @@ CREATE TABLE `BudgetItems` (
 
 CREATE TABLE `Expenses` (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
   `expense_date` date NOT NULL,
-  `charge_date` date NOT NULL,
-  `amount` float(2) NOT NULL,
   `name` varchar(300) NOT NULL,
+  `amount` float(2) NOT NULL,
+  `charge_month` varchar(10) NOT NULL,
   `asmachta` bigint DEFAULT NULL,
   `original_amount` float(2) DEFAULT NULL,
   `details` varchar(300) DEFAULT NULL,

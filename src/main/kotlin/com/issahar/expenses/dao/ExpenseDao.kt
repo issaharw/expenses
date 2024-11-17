@@ -13,7 +13,6 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transactional
 import java.sql.ResultSet
 import com.issahar.expenses.model.*
-import com.issahar.expenses.util.*
 
 
 @RegisterRowMappers(RegisterRowMapper(ExpenseMapper::class))
@@ -23,24 +22,43 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
         """select
             id,
             expense_date,
-            charge_date,
-            amount,
             name,
+            amount,
+            charge_month,
             asmacta,
             original_amount,
             details,
             expense_type,
             creation_time
-          from Expenses"""
+          from Expenses
+          WHERE user_id = :userId"""
     )
-    fun getExpenses(): List<Expense>
+    fun getExpenses(@Bind userId: Int): List<Expense>
+
+    @SqlQuery(
+        """select
+            id,
+            expense_date,
+            name,
+            amount,
+            charge_month,
+            asmacta,
+            original_amount,
+            details,
+            expense_type,
+            creation_time
+          from Expenses
+          WHERE user_id = :userId AND charge_month = :chargeMonth"""
+    )
+    fun getExpensesForMonth(@Bind userId: Int, @Bind chargeMonth: String): List<Expense>
 
     @SqlUpdate("""INSERT INTO Expenses
           (
+            user_id,
             expense_date,
-            charge_date,
-            amount,
             name,
+            amount,
+            charge_month,
             asmacta,
             original_amount,
             details,
@@ -48,19 +66,20 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             creation_time
           )
           VALUES (
+            :userId,
             :date,
-            :chargeDate,
-            :amount,
             :name,
+            :amount,
+            :chargeMonth,
             :asmachta,
-            :originalAnmount,
+            :originalAmount,
             :details,
             :expenseTypeValue,
             FROM_UNIXTIME(:creationTime * 0.001)
           )"""
     )
     @GetGeneratedKeys
-    fun addExpense(@BindBean expense: Expense): Int
+    fun addExpense(@Bind userId: Int, @BindBean expense: Expense): Int
 }
 
 class ExpenseMapper : RowMapper<Expense> {
@@ -68,9 +87,9 @@ class ExpenseMapper : RowMapper<Expense> {
         return Expense(
             resultSet.getInt("id"),
             resultSet.getDate("expense_date"),
-            resultSet.getDate("charge_date"),
-            resultSet.getFloat("amount").toDouble(),
             resultSet.getString("name"),
+            resultSet.getFloat("amount").toDouble(),
+            resultSet.getString("charge_month"),
             resultSet.getInt("asmachta"),
             resultSet.getFloat("original_amount").toDouble(),
             resultSet.getString("details"),

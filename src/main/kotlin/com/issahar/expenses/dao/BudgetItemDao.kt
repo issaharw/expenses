@@ -49,7 +49,7 @@ interface BudgetItemDao : SqlObject, Transactional<BudgetItemDao> {
 
     @SqlUpdate("""UPDATE BudgetItems SET
           amount = :amount
-          WHERE budget_month = :month AND category_id = :categoryId"""
+          WHERE user_id = :userId, budget_month = :month AND category_id = :categoryId"""
     )
     fun updateBudgetItem(@Bind userId: Int, @Bind month: String, @Bind categoryId: Int, @Bind amount: Int)
 

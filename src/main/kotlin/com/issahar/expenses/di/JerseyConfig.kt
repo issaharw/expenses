@@ -9,6 +9,6 @@ class JerseyConfig : ResourceConfig() {
     init {
         register(HealthResource::class.java)
         register(BudgetResource::class.java)
-//        register(ExpenseResource::class.java)
+        register(TrackingResource::class.java)
     }
 }

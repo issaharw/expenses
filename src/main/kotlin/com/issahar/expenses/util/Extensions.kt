@@ -33,10 +33,10 @@ fun Long.asStartOfDay(zoneOffset: ZoneOffset = ZoneOffset.UTC): Long {
 fun getCurrentBudgetMonth(): String {
     val israelZoneId = ZoneId.of("Asia/Jerusalem")
     val todayInIsrael = ZonedDateTime.now(israelZoneId).toLocalDate()
-    val adjustedDate = if (todayInIsrael.dayOfMonth >= 10) {
-        todayInIsrael
-    } else {
+    val adjustedDate = if (todayInIsrael.dayOfMonth < 10) {
         todayInIsrael.minusMonths(1)
+    } else {
+        todayInIsrael
     }
     return adjustedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 }
