@@ -12,7 +12,8 @@ import java.io.InputStream
 @Service
 class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
                                           private val parserFactory: ParserFactory,
-                                          private val categoryDao: CategoryDao) {
+                                          private val categoryDao: CategoryDao,
+                                          private val budgetService: BudgetService) {
 
     fun getExpenses(userId: Int): List<Expense> = expenseDao.getExpenses(userId)
 
@@ -56,5 +57,18 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
             expenseDao.getExpensesForMonths(userId, budgetMonths)
 
         return expenses.filter { !dbExpenses.contains(it) }
+    }
+
+    fun getCurrentMonthTracking(userId: Int): List<CurrentMonthTrackingDO> {
+        val budgetItems = budgetService.getBudgetItemsForCurrentMonth(userId)
+        val expenses = getExpensesForCurrentMonth(userId)
+        val trackingItems = budgetItems.map { budgetItem ->
+            val categoryName = budgetItem.category.name
+            val budgetAmount = budgetItem.amount
+            val expensesSum = expenses.filter { it.category?.name == categoryName }.sumOf { it.amount }
+            CurrentMonthTrackingDO(categoryName, budgetAmount, expensesSum)
+        }
+
+        return trackingItems
     }
 }

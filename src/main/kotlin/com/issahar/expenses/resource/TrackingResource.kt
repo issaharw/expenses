@@ -1,6 +1,7 @@
 package com.issahar.expenses.resource
 
 import com.issahar.expenses.handler.TrackingService
+import com.issahar.expenses.model.CurrentMonthTrackingDO
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpensesFileType
 import org.slf4j.LoggerFactory
@@ -47,5 +48,12 @@ class TrackingResource @Inject constructor(private val trackingService: Tracking
         val expensesFileType = ExpensesFileType.fromValue(fileType)
         logger.info("Received expenses file of type: $expensesFileType")
         return trackingService.parseExpensesExcel(userId, requestInputStream, expensesFileType)
+    }
+
+    @GET
+    @Path("/current-month")
+    @Produces("application/json")
+    fun getCurrentMonthTracking(): List<CurrentMonthTrackingDO> {
+        return trackingService.getCurrentMonthTracking(userId)
     }
 }
