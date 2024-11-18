@@ -7,15 +7,14 @@ import java.util.*
 
 fun now() = System.currentTimeMillis()
 
-fun String.parseDate(datePattern: String, timeZone: String = "UTC"): Date {
-    val sdf = SimpleDateFormat(datePattern)
-    sdf.timeZone = TimeZone.getTimeZone(timeZone)
-    return sdf.parse(this)
+fun String.parseDate(datePattern: String): LocalDate {
+    val dtf = DateTimeFormatter.ofPattern(datePattern)
+    return LocalDate.parse(this, dtf)
 }
 
 fun getCurrentBudgetMonth() = Date().localDate().budgetMonth()
 
-fun Date.localDate(): LocalDate = this.toInstant().atZone(ZoneId.of("Asia/Jerusalem")).toLocalDate()
+fun Date.localDate(): LocalDate = this.toInstant().atZone(ZoneId.of("UTC")).toLocalDate()
 
 fun LocalDate.budgetMonth(): String {
     val adjustedDate = if (this.dayOfMonth >= 10) {
@@ -26,7 +25,7 @@ fun LocalDate.budgetMonth(): String {
     return adjustedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 }
 
-fun Date.budgetMonthFromChargeDate() = this.localDate().format(DateTimeFormatter.ofPattern("yyyy-MM"))
+fun LocalDate.budgetMonthFromChargeDate() = this.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 
 //fun Long.formatDate(datePattern: String, timeZone: String = "UTC"): String {
 //    val sdf = SimpleDateFormat(datePattern)

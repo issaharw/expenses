@@ -2,6 +2,7 @@ package com.issahar.expenses.excel
 
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpenseType
+import com.issahar.expenses.util.localDate
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFSheet
@@ -26,7 +27,7 @@ class PoalimTransactionsFileParser: ExpensesFileParser {
 
 
     private fun getExpenseFromRow(row: Row, chargeMonth: String): Expense {
-        val date = row.getCell(0).dateCellValue
+        val date = row.getCell(0).dateCellValue.localDate()
         val name  = row.getCell(1).stringCellValue
         val details  = row.getCell(2)?.stringCellValue
         val asmachta = row.getCell(3).numericCellValue.toInt()

@@ -13,6 +13,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transactional
 import java.sql.ResultSet
 import com.issahar.expenses.model.*
+import org.jdbi.v3.sqlobject.customizer.BindList
 
 
 @RegisterRowMappers(RegisterRowMapper(ExpenseMapper::class))
@@ -24,7 +25,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             expense_date,
             e.name,
             amount,
-            charge_month,
+            budget_month,
             asmachta,
             original_amount,
             details,
@@ -44,7 +45,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             expense_date,
             e.name,
             amount,
-            charge_month,
+            budget_month,
             asmachta,
             original_amount,
             details,
@@ -54,9 +55,29 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             creation_time
           FROM Expenses as e
           LEFT JOIN Categories as c on (e.category_name = c.name)
-          WHERE e.user_id = :userId AND charge_month = :chargeMonth"""
+          WHERE e.user_id = :userId AND budget_month = :budgetMonth"""
     )
-    fun getExpensesForMonth(@Bind userId: Int, @Bind chargeMonth: String): List<Expense>
+    fun getExpensesForMonth(@Bind userId: Int, @Bind budgetMonth: String): List<Expense>
+
+    @SqlQuery(
+        """SELECT
+            id,
+            expense_date,
+            e.name,
+            amount,
+            budget_month,
+            asmachta,
+            original_amount,
+            details,
+            expense_type,
+            category_name,
+            parent_category,
+            creation_time
+          FROM Expenses as e
+          LEFT JOIN Categories as c on (e.category_name = c.name)
+          WHERE e.user_id = :userId AND budget_month in (<budgetMonths>)"""
+    )
+    fun getExpensesForMonths(@Bind userId: Int, @BindList("budgetMonths") budgetMonths: List<String>): List<Expense>
 
     @SqlUpdate("""INSERT INTO Expenses
           (
@@ -64,7 +85,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             expense_date,
             name,
             amount,
-            charge_month,
+            budget_month,
             asmachta,
             original_amount,
             details,
@@ -77,7 +98,7 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
             :date,
             :name,
             :amount,
-            :chargeMonth,
+            :budgetMonth,
             :asmachta,
             :originalAmount,
             :details,
@@ -92,18 +113,23 @@ interface ExpenseDao : SqlObject, Transactional<ExpenseDao> {
 
 class ExpenseMapper : RowMapper<Expense> {
     override fun map(resultSet: ResultSet, statementContext: StatementContext): Expense {
-        val category = Category(
-            resultSet.getString("category_name"),
-            resultSet.getString("parent_category")
-        )
+        val categoryName = resultSet.getString("category_name")
+        val category = if (categoryName != null) {
+            Category(
+                resultSet.getString("category_name"),
+                resultSet.getString("parent_category")
+            )
+        }
+        else
+            null
         return Expense(
             resultSet.getInt("id"),
-            resultSet.getDate("expense_date"),
+            resultSet.getDate("expense_date").toLocalDate(),
             resultSet.getString("name"),
-            resultSet.getFloat("amount").toDouble(),
-            resultSet.getString("charge_month"),
+            resultSet.getDouble("amount"),
+            resultSet.getString("budget_month"),
             resultSet.getInt("asmachta"),
-            resultSet.getFloat("original_amount").toDouble(),
+            resultSet.getDouble("original_amount"),
             resultSet.getString("details"),
             ExpenseType.fromValue(resultSet.getInt("expense_type")),
             category,

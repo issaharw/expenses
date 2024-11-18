@@ -2,6 +2,7 @@ package com.issahar.expenses.excel
 
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpenseType
+import com.issahar.expenses.util.localDate
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFSheet
@@ -68,7 +69,7 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
     private fun getIsraelExpenseFromRow(row: Row, chargeMonth: String): Expense {
         val cardName = row.getCell(0).stringCellValue
         val chargeDate = row.getCell(1).dateCellValue
-        val date = row.getCell(2).dateCellValue
+        val date = row.getCell(2).dateCellValue.localDate()
         val name  = row.getCell(3).stringCellValue
         val originalAmount = row.getCell(4).numericCellValue
         val amount = row.getCell(5).numericCellValue
@@ -83,7 +84,7 @@ class PoalimCreditCardFileParser: ExpensesFileParser {
     private fun getAbroadExpenseFromRow(row: Row, chargeMonth: String): Expense {
         val cardName = row.getCell(0).stringCellValue
         val chargeDate = row.getCell(1).dateCellValue
-        val date = row.getCell(2).dateCellValue
+        val date = row.getCell(2).dateCellValue.localDate()
         val name  = row.getCell(3).stringCellValue
         val amount = row.getCell(4).numericCellValue
         val originalAmount = row.getCell(5).numericCellValue

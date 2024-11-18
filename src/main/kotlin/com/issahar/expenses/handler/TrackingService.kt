@@ -20,12 +20,12 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
 
     fun getExpensesForCurrentMonth(userId: Int): List<Expense> = expenseDao.getExpensesForMonth(userId, getCurrentBudgetMonth())
 
-    fun addExpense(userId: Int, expense: Expense): Int {
+    fun addExpense(userId: Int, expense: Expense): Expense {
         val expenseMap = getExpenseNameMap(userId)
         val expenseCategory = expenseMap[expense.name]
         val expenseWithCategory = expense.copy(category = expenseCategory)
-        val expenseId = expenseDao.addExpense(userId, expenseWithCategory)
-        return expenseId
+        expenseDao.addExpense(userId, expenseWithCategory)
+        return expenseWithCategory
     }
 
     private fun getExpenseNameMap(userId: Int): Map<String, Category> {
@@ -38,12 +38,23 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
         return ServerCache.expenseNameCategoryMap
     }
 
-    fun parseExpensesExcel(userId: Int, excelIS: InputStream, fileType: ExpensesFileType): Int {
+    fun parseExpensesExcel(userId: Int, excelIS: InputStream, fileType: ExpensesFileType): List<Expense> {
         val parser = parserFactory.getParser(fileType)
         val expenses = parser.parseFile(excelIS).filter { it.amount != 0.0 }
-        expenses.forEach {
+        val expensesToInsert = getExpensesToInsertToDB(userId, expenses)
+        val expensesWithCategories = expensesToInsert.map {
             addExpense(userId, it)
         }
-        return expenses.size
+        return expensesWithCategories.sortedByDescending { it.date }
+    }
+
+    private fun getExpensesToInsertToDB(userId: Int, expenses: List<Expense>): List<Expense> {
+        val budgetMonths = expenses.map { it.budgetMonth }.distinct()
+        val dbExpenses = if (budgetMonths.size == 1)
+            expenseDao.getExpensesForMonth(userId, budgetMonths.first())
+        else
+            expenseDao.getExpensesForMonths(userId, budgetMonths)
+
+        return expenses.filter { !dbExpenses.contains(it) }
     }
 }

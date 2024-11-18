@@ -28,7 +28,7 @@ CREATE TABLE `Expenses` (
   `expense_date` date NOT NULL,
   `name` varchar(300) NOT NULL,
   `amount` float(2) NOT NULL,
-  `charge_month` varchar(10) NOT NULL,
+  `budget_month` varchar(10) NOT NULL,
   `asmachta` bigint DEFAULT NULL,
   `original_amount` float(2) DEFAULT NULL,
   `details` varchar(300) DEFAULT NULL,

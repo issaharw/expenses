@@ -37,13 +37,13 @@ class TrackingResource @Inject constructor(private val trackingService: Tracking
     @Path("/expenses")
     @Consumes("application/json")
     @Produces("application/json")
-    fun addExpense(expense: Expense): Int = trackingService.addExpense(userId, expense)
+    fun addExpense(expense: Expense): Expense = trackingService.addExpense(userId, expense)
 
     @PUT
     @Path("/upload/{expensesFileType}")
 //    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/json")
-    fun uploadFile(@PathParam("expensesFileType") fileType: String, requestInputStream: InputStream): Int {
+    fun uploadFile(@PathParam("expensesFileType") fileType: String, requestInputStream: InputStream): List<Expense> {
         val expensesFileType = ExpensesFileType.fromValue(fileType)
         logger.info("Received expenses file of type: $expensesFileType")
         return trackingService.parseExpensesExcel(userId, requestInputStream, expensesFileType)

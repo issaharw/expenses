@@ -3,12 +3,11 @@ package com.issahar.expenses.excel
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpenseType
 import com.issahar.expenses.util.*
-import kotlinx.coroutines.delay
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.InputStream
-import java.util.*
+import java.time.LocalDate
 
 class CalCreditCardFileParser: ExpensesFileParser {
     override fun parseFile(inputStream: InputStream): List<Expense> {
@@ -43,16 +42,16 @@ class CalCreditCardFileParser: ExpensesFileParser {
     }
 
     private fun getIsraelExpenseFromRow(row: Row, budgetMonth: String): Expense {
-        val date = row.getCell(0).dateCellValue
+        val date = row.getCell(0).dateCellValue.localDate()
         val name  = row.getCell(1).stringCellValue
         val originalAmount = row.getCell(2).numericCellValue
         val amountStr = row.getCell(3).getCellValue()
         val amount = if (amountStr.isEmpty()) 0.0 else amountStr.toDouble()
         val comment = row.getCell(5).stringCellValue
-        return Expense(0, date, name, amount, budgetMonth, null, originalAmount, "Category: $comment.", ExpenseType.CreditCardIsrael)
+        return Expense(0, date, name, amount, budgetMonth, 0, originalAmount, "Category: $comment.", ExpenseType.CreditCardIsrael)
     }
 
 
 
-    private fun String.toDate(): Date = this.parseDate("dd/MM/yyyy")
+    private fun String.toDate(): LocalDate = this.parseDate("dd/MM/yyyy")
 }
