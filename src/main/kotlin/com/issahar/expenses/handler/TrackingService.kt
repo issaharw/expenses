@@ -8,6 +8,7 @@ import com.issahar.expenses.util.getCurrentBudgetMonth
 import jakarta.inject.Inject
 import org.springframework.stereotype.Service
 import java.io.InputStream
+import java.time.LocalDate
 
 @Service
 class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
@@ -66,7 +67,11 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
             val categoryName = budgetItem.category.name
             val budgetAmount = budgetItem.amount
             val expensesSum = expenses.filter { it.category?.name == categoryName }.sumOf { it.amount }
-            CurrentMonthTrackingDO(categoryName, budgetAmount, expensesSum)
+            val lastUpdate = if (expensesSum != 0.0)
+                expenses.filter { it.category?.name == categoryName }.maxByOrNull { it.date }!!.date
+            else
+                LocalDate.MIN
+            CurrentMonthTrackingDO(categoryName, budgetAmount, expensesSum, lastUpdate)
         }
 
         return trackingItems
