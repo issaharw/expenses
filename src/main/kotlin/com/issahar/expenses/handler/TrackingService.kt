@@ -60,10 +60,11 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
         return expenses.filter { !dbExpenses.contains(it) }
     }
 
-    fun getCurrentMonthTracking(userId: Int): List<CurrentMonthTrackingDO> {
+    fun getCurrentMonthCategoriesStatus(userId: Int): List<MonthCategoryStatus> {
+        val budgetMonth = getCurrentBudgetMonth()
         val budgetItems = budgetService.getBudgetItemsForCurrentMonth(userId)
         val expenses = getExpensesForCurrentMonth(userId)
-        val trackingItems = budgetItems.map { budgetItem ->
+        val monthCategories = budgetItems.map { budgetItem ->
             val categoryName = budgetItem.category.name
             val budgetAmount = budgetItem.amount
             val expensesSum = expenses.filter { it.category?.name == categoryName }.sumOf { it.amount }
@@ -71,9 +72,9 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
                 expenses.filter { it.category?.name == categoryName }.maxByOrNull { it.date }!!.date
             else
                 LocalDate.MIN
-            CurrentMonthTrackingDO(categoryName, budgetAmount, expensesSum, lastUpdate)
+            MonthCategoryStatus(categoryName, budgetMonth, budgetAmount, expensesSum, lastUpdate)
         }
 
-        return trackingItems
+        return monthCategories
     }
 }

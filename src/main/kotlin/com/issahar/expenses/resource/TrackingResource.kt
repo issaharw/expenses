@@ -1,7 +1,7 @@
 package com.issahar.expenses.resource
 
 import com.issahar.expenses.handler.TrackingService
-import com.issahar.expenses.model.CurrentMonthTrackingDO
+import com.issahar.expenses.model.MonthCategoryStatus
 import com.issahar.expenses.model.Expense
 import com.issahar.expenses.model.ExpensesFileType
 import org.slf4j.LoggerFactory
@@ -51,9 +51,12 @@ class TrackingResource @Inject constructor(private val trackingService: Tracking
     }
 
     @GET
-    @Path("/current-month")
+    @Path("/status/current-month")
     @Produces("application/json")
-    fun getCurrentMonthTracking(): List<CurrentMonthTrackingDO> {
-        return trackingService.getCurrentMonthTracking(userId)
+    fun getCurrentMonthStatus(): MonthStatusDO {
+        val categories = trackingService.getCurrentMonthCategoriesStatus(userId)
+        return MonthStatusDO(categories)
     }
 }
+
+data class MonthStatusDO(val categories: List<MonthCategoryStatus>)
