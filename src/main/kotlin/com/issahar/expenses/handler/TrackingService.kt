@@ -71,7 +71,7 @@ class TrackingService @Inject constructor(private val expenseDao: ExpenseDao,
             val lastUpdate = if (expensesSum != 0.0)
                 expenses.filter { it.category?.name == categoryName }.maxByOrNull { it.date }!!.date
             else
-                LocalDate.MIN
+                LocalDate.parse("2000-01-01")
             MonthCategoryStatus(categoryName, budgetMonth, budgetAmount, expensesSum, lastUpdate)
         }
 
